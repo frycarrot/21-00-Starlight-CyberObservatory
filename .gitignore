@@ -1,0 +1,6 @@
+tools/_shots/
+tools/stars.json.gz
+HANDOFF.md
+node_modules/
+.env
+.env.*

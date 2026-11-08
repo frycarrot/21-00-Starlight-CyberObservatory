@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>21时的星空·赛博天文台 | 21:00 Starlight·CyberObservatory</title>
+  <meta name="description" content="21时的星空·赛博天文台：一张只属于你的私人星座，真实日期、真实城市、真实星空。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/observatory.css">
+</head>
+<body>
+  <main class="sheet">
+    <header class="sheet-head">
+      <span class="head-side">21:00 Starlight·CyberObservatory</span>
+      <h1 class="sheet-title" id="sheetTitle">Map Nº —</h1>
+      <span class="head-side right" id="headCity"></span>
+    </header>
+
+    <section class="map" id="map">
+      <canvas id="sky" aria-label="星图"></canvas>
+
+      <p class="hint" id="hint">拖动看天 · 滚轮/双指缩放 · 双击回到星座 · 点星星看名字</p>
+
+      <button class="story-star" id="storyBtn" type="button" aria-label="打开故事卡">
+        <span class="story-halo"></span>
+        <svg viewBox="-60 -60 120 120" aria-hidden="true">
+          <defs>
+            <radialGradient id="btnCore">
+              <stop offset="0" stop-color="#fffdf5"/>
+              <stop offset="0.6" stop-color="#fff6dc"/>
+              <stop offset="1" stop-color="#f4e6bd"/>
+            </radialGradient>
+          </defs>
+          <path id="btnStar" fill="url(#btnCore)"/>
+        </svg>
+        <span class="story-label">story</span>
+      </button>
+
+      <div class="star-tip" id="tip" hidden></div>
+      <div class="notice" id="notice" hidden></div>
+    </section>
+
+    <footer class="sheet-foot">
+      <span id="footLeft"></span>
+      <button class="save-map" type="button" data-save-poster="map" aria-label="生成星图明信片">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.8 8 10.3l3.5-3.5M2.5 13.5h11"/></svg>保存图片
+      </button>
+      <span class="foot-right">星表 <a href="https://celeris-app.com/star-catalog.html" target="_blank" rel="noopener">Celeris</a> / HYG v4.1 · CC BY-SA 4.0</span>
+    </footer>
+  </main>
+
+  <!-- 故事卡 -->
+  <div class="card-layer" id="cardLayer" aria-hidden="true">
+    <article class="card" id="card" role="dialog" aria-modal="true" aria-labelledby="cardName">
+      <svg class="card-art" id="cardArt" viewBox="0 0 725 1024" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      <div class="card-text">
+        <p class="eyebrow">PRIVATE CONSTELLATION<br>私人星座</p>
+        <p class="to" id="cardTo"></p>
+        <h2 id="cardName"></h2>
+        <svg class="mini" id="cardMini" viewBox="-0.62 -0.62 1.24 1.24" aria-hidden="true"></svg>
+        <div class="story" id="cardStory"></div>
+        <p class="from" id="cardFrom"></p>
+        <p class="meta" id="cardMeta"></p>
+        <p class="meta stars" id="cardStars"></p>
+      </div>
+      <button class="save-link" type="button" data-save-poster="card">保存星图图片</button>
+      <button class="card-close" id="cardClose" type="button" aria-label="关闭">×</button>
+    </article>
+  </div>
+
+  <!-- 生成的纪念图 -->
+  <div class="poster-layer" id="posterLayer" aria-hidden="true">
+    <div class="poster-box" role="dialog" aria-modal="true" aria-label="星图明信片">
+      <div class="poster-stage">
+        <div class="poster-track" id="posterTrack">
+          <figure class="poster-slide"><img id="posterImgMap" alt="星图明信片"></figure>
+          <figure class="poster-slide"><img id="posterImgCard" alt="故事卡明信片"></figure>
+        </div>
+        <button class="poster-arrow prev" id="posterPrev" type="button" aria-label="上一张">‹</button>
+        <button class="poster-arrow next" id="posterNext" type="button" aria-label="下一张">›</button>
+      </div>
+      <div class="poster-dots" id="posterDots">
+        <button type="button" data-i="0" class="on">星图</button>
+        <button type="button" data-i="1">故事卡</button>
+      </div>
+      <div class="poster-actions">
+        <button id="posterSave" class="poster-btn primary" type="button">保存这张</button>
+        <button id="posterClose" class="poster-btn" type="button">关闭</button>
+      </div>
+      <p class="poster-tip">左右滑动切换 · 手机上也可以长按图片保存</p>
+    </div>
+  </div>
+
+  <!-- 调试面板：网址加 ?lab 打开 -->
+  <aside class="lab" id="lab" hidden>
+    <div class="lab-head">星图码试验台 <button type="button" id="labToggle">收起</button></div>
+    <div class="lab-body">
+      <textarea id="labInput" rows="5" spellcheck="false"></textarea>
+      <div class="lab-row" id="labPresets"></div>
+      <div class="lab-row">
+        <input id="labDate" type="date">
+        <button type="button" id="labApply">生成</button>
+        <button type="button" id="labCopy">复制链接</button>
+      </div>
+      <pre id="labInfo"></pre>
+    </div>
+  </aside>
+
+  <script src="data/stars.js"></script>
+  <script src="js/names-zh.js"></script>
+  <script src="js/sky.js"></script>
+  <script src="js/marker.js"></script>
+  <script src="js/matcher.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/card.js"></script>
+  <script src="js/poster.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

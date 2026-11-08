@@ -4,6 +4,8 @@
 
 运行 `node tools/serve.mjs`，或直接打开 `index.html`。网址加 `?lab` 可打开星图码试验台。
 
+运行 `node tools/check-export-fit.mjs` 检查导出星图的完整性（四个地区、横竖屏、缩放与拖动后的星点/星名边界及页面视角恢复；与截图脚本共用 Playwright 配置）。
+
 运行 `node tools/test-match.js` 检查四个地区的星座匹配；`node tools/check-poster.mjs` 检查明信片界面（需要 Playwright，见脚本说明）。
 
 ## 文件

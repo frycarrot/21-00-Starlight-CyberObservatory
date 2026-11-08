@@ -385,9 +385,51 @@
       requestAnimationFrame(frame);
     }
 
+    // 保留取景方向，必要时缩小，确保导出边界内有完整星座、星名和标题。
+    function fitSnapshot() {
+      if (!selected.length) return;
+      if (selected.some(s => !proj(s.v))) {
+        fitView();
+        // 极宽的星座仍可能超出当前投影；天顶视角能容纳所有地平线上方的星。
+        if (selected.some(s => !proj(s.v))) {
+          view.alt = 90;
+          updateBasis();
+        }
+      }
+      const k = view.k;
+      view.k = 1;
+      updateBasis();
+      const pts = selected.map(s => {
+        const p = proj(s.v);
+        return { s, x: p[0] - W / 2, y: p[1] - H / 2 };
+      });
+      let fitted = k;
+      const constrain = (position, negativeRoom, positiveRoom) => {
+        if (position < 0) fitted = Math.min(fitted, Math.max(1, negativeRoom) / -position);
+        if (position > 0) fitted = Math.min(fitted, Math.max(1, positiveRoom) / position);
+      };
+      // 留出星芒与右侧星名；使用渲染器可能用到的最大字号。
+      ctx.font = `italic 16px ${FONT_SERIF}`;
+      for (const p of pts) {
+        const label = zhNames[p.s.name] || p.s.name || '';
+        const right = Math.max(64, ctx.measureText(label).width + 36);
+        constrain(p.x, W / 2 - 64, W / 2 - right);
+        constrain(p.y, H / 2 - 120, H / 2 - 64);
+      }
+      const titleX = (Math.min(...pts.map(p => p.x)) + Math.max(...pts.map(p => p.x))) / 2;
+      ctx.font = `italic ${Math.round(clamp(Math.min(W, H) / 18, 22, 40))}px ${FONT_SERIF}`;
+      let halfWidth = ctx.measureText(title || '').width / 2;
+      ctx.font = `italic 12px ${FONT_SERIF}`;
+      const subtitle = data.to ? `a private constellation · for ${data.to}` : 'a private constellation';
+      halfWidth = Math.max(halfWidth, ctx.measureText(subtitle).width / 2);
+      constrain(titleX, W / 2 - halfWidth - 24, W / 2 - halfWidth - 24);
+      view.k = fitted;
+      updateBasis();
+    }
+
     // 把当前视角按指定尺寸完整画一张（保存图片用），动画按「已画完」的状态
     function snapshot(w, h, scale = 2) {
-      const saved = { ctx, layer, lctx, W, H, dpr, k: view.k, noisePattern };
+      const saved = { ctx, layer, lctx, W, H, dpr, view: { ...view }, noisePattern, hitList, selScreen };
       snapshotting = true;
       try {
         const out = document.createElement('canvas');
@@ -396,15 +438,15 @@
         layer.width = out.width; layer.height = out.height;
         lctx = layer.getContext('2d');
         ctx = out.getContext('2d');
-        view.k = saved.k * Math.min(w, h) / Math.min(saved.W, saved.H);
+        view.k = saved.view.k * Math.min(w / saved.W, h / saved.H);
         W = w; H = h; dpr = scale;
         noisePattern = lctx.createPattern(noise, 'repeat');
-        updateBasis(); cacheScreen(); renderStatic();
+        updateBasis(); fitSnapshot(); cacheScreen(); renderStatic();
         drawFrame(60, true);
         return out;
       } finally {
-        ({ ctx, layer, lctx, W, H, dpr, noisePattern } = saved);
-        view.k = saved.k;
+        ({ ctx, layer, lctx, W, H, dpr, noisePattern, hitList, selScreen } = saved);
+        Object.assign(view, saved.view);
         updateBasis(); dirty = true;
         snapshotting = false;
       }

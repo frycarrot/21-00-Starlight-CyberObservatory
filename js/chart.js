@@ -532,12 +532,15 @@
         }
       }
 
-      // 选中的星
+      // 回访顶点只绘制一次星芒与名字，连线路径仍保留每次回访。
+      const drawnStars = new Set();
       ctx.font = `italic ${Math.round(13 * clamp(zoom, 0.9, 1.2))}px ${FONT_SERIF}`;
       for (let i = 0; i < n; i++) {
         const p = pts[i];
         const appear = calm ? 1 : clamp((prog - i + 0.35) * 2.5, 0, 1);
         if (appear <= 0) continue;
+        if (drawnStars.has(p.s)) continue;
+        drawnStars.add(p.s);
         const r = radius(p.s) * (0.6 + 0.4 * appear);
         const pulse = calm ? 1 : 1 + 0.14 * Math.sin(t * 2.1 * p.s.sp + p.s.ph);
         const gr = r * 5.2 * pulse;

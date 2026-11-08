@@ -23,6 +23,17 @@
   }
 
   function matchTemplate(points, candidates, opts = {}) {
+    // 一笔路径可以回访同一顶点；重复坐标必须复用同一颗星。
+    const unique = [], indices = [], seen = new Map();
+    for (const p of points) {
+      const key = `${p.x},${p.y}`;
+      if (!seen.has(key)) { seen.set(key, unique.length); unique.push(p); }
+      indices.push(seen.get(key));
+    }
+    if (unique.length !== points.length) {
+      const result = matchTemplate(unique, candidates, opts);
+      return result ? { ...result, stars: indices.map(i => result.stars[i]), ghostPlane: indices.map(i => result.ghostPlane[i]) } : null;
+    }
     const minSpan = opts.minSpan ?? 0.45; // 图形最长跨度下限（≈弧度，约 26°）
     const maxSpan = opts.maxSpan ?? 1.35; // 上限（约 75°）
     const freeTilt = (opts.freeTiltDeg ?? 40) * D2R;

@@ -9,6 +9,7 @@ const oldChart = process.env.TEST_OLD_CHART ? execFileSync('git', ['-c', 'safe.d
 const browser = await chromium.launch({ channel: process.env.PW_CHANNEL || 'msedge' });
 try {
   for (const [name, width, height, region, city, points] of [
+    ['revisit-mobile', 390, 844, '东亚', '上海', '(1,6);(9,10);(6,6);(9,2);(1,6);(4,6);(5,4)'],
     ['tall-mobile', 390, 844, '东亚', '上海', '(2,1);(1,6);(5,9);(8,2);(2,1)'],
     ['wide-desktop', 1366, 650, '欧洲', '巴黎', '(1,5);(3,6);(7,6);(9,5);(5,4);(1,5)'],
     ['south-mobile', 360, 900, '澳洲', '悉尼', '(2,2);(2,6);(5,9);(8,6);(8,2);(2,2)'],
@@ -71,6 +72,7 @@ try {
       for (const name of result.expected) {
         const label = result.labels.find(l => l.text === name);
         assert(label, `${name}/${mode}: missing star`);
+        assert.equal(result.labels.filter(l => l.text === name).length, 1, `${name}: repeated label`);
         assert(label.x >= 24 && label.x + label.width < 904 - 16 && label.y > 40 && label.y < 904 - 24, `${name}/${mode}: clipped ${JSON.stringify(label)}`);
       }
       assert.deepEqual(result.afterShape, result.beforeShape, `${name}/${mode}: snapshot changed screen caches`);

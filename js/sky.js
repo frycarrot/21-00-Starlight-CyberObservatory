@@ -12,12 +12,19 @@
   const D2R = Math.PI / 180;
   const R2D = 180 / Math.PI;
 
-  // 四个天空预设区。tz 用 IANA 时区名，夏令时由浏览器自带的时区库处理。
+  // 十一座城市预设。tz 用 IANA 时区名，夏令时由浏览器自带的时区库处理。
   const PRESETS = [
     { region: '东亚', city: '上海', cityEn: 'Shanghai', lat: 31.2304, lon: 121.4737, tz: 'Asia/Shanghai' },
     { region: '欧洲', city: '巴黎', cityEn: 'Paris', lat: 48.8566, lon: 2.3522, tz: 'Europe/Paris' },
     { region: '澳洲', city: '悉尼', cityEn: 'Sydney', lat: -33.8688, lon: 151.2093, tz: 'Australia/Sydney' },
     { region: '北美', city: '纽约', cityEn: 'New York', lat: 40.7128, lon: -74.006, tz: 'America/New_York' },
+    { region: '东亚', city: '东京', cityEn: 'Tokyo', lat: 35.6762, lon: 139.6503, tz: 'Asia/Tokyo' },
+    { region: '东亚', city: '香港', cityEn: 'Hong Kong', lat: 22.3193, lon: 114.1694, tz: 'Asia/Hong_Kong' },
+    { region: '东亚', city: '台北', cityEn: 'Taipei', lat: 25.033, lon: 121.5654, tz: 'Asia/Taipei' },
+    { region: '东亚', city: '北京', cityEn: 'Beijing', lat: 39.9042, lon: 116.4074, tz: 'Asia/Shanghai' },
+    { region: '欧洲', city: '伦敦', cityEn: 'London', lat: 51.5074, lon: -0.1278, tz: 'Europe/London' },
+    { region: '北美', city: '洛杉矶', cityEn: 'Los Angeles', lat: 34.0522, lon: -118.2437, tz: 'America/Los_Angeles' },
+    { region: '东南亚', city: '新加坡', cityEn: 'Singapore', lat: 1.3521, lon: 103.8198, tz: 'Asia/Singapore' },
   ];
 
   function findPreset(region, city) {

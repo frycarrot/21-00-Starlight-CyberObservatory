@@ -42,7 +42,7 @@
   // 页边文字
   const [y, mo, d] = parsed.date.split('-');
   $('sheetTitle').textContent = `Map Nº ${MONTHS[+mo - 1]}·${+d}.`;
-  const regionNames = { '东亚': 'EAST ASIA', '欧洲': 'EUROPE', '澳洲': 'AUSTRALIA', '北美': 'NORTH AMERICA' };
+  const regionNames = { '东亚': 'EAST ASIA', '欧洲': 'EUROPE', '澳洲': 'AUSTRALIA', '北美': 'NORTH AMERICA', '东南亚': 'SOUTHEAST ASIA' };
   $('headCity').textContent = `${regionNames[preset.region]} · ${preset.region}（代表城市：${preset.city}）`;
   const off = Sky.utcOffsetLabel(t, preset.tz);
   $('footLeft').textContent = `${preset.city} ${dms(preset.lat, 'N', 'S')} ${dms(preset.lon, 'E', 'W')} · ${y}.${mo}.${d} ${parsed.time} ${off}`;

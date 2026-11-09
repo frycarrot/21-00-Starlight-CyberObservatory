@@ -14,8 +14,8 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.StarMarker = api;
 })(typeof self !== 'undefined' ? self : this, function () {
-  const REGION_CITY = { '东亚': '上海', '欧洲': '巴黎', '澳洲': '悉尼', '北美': '纽约' };
-  const CITY_REGION = { '上海': '东亚', '巴黎': '欧洲', '悉尼': '澳洲', '纽约': '北美' };
+  const REGION_CITY = { '东亚': '上海', '欧洲': '巴黎', '澳洲': '悉尼', '北美': '纽约', '东南亚': '新加坡' };
+  const CITY_REGION = { '上海': '东亚', '巴黎': '欧洲', '悉尼': '澳洲', '纽约': '北美', '东京': '东亚', '香港': '东亚', '台北': '东亚', '北京': '东亚', '伦敦': '欧洲', '洛杉矶': '北美', '新加坡': '东南亚' };
   const MIN_POINTS = 4, MAX_POINTS = 10, HARD_MAX = 12;
 
   function todayStr() {
@@ -73,7 +73,7 @@
     if (!city && region) city = REGION_CITY[region];
     if (!region && city) region = CITY_REGION[city];
     if (!city) { warnings.push('没写地区，默认东亚·上海'); region = '东亚'; city = '上海'; }
-    if (region && REGION_CITY[region] !== city) warnings.push(`「${region}」和「${city}」不匹配，以城市为准`);
+    if (region && CITY_REGION[city] !== region) warnings.push(`「${region}」和「${city}」不匹配，以城市为准`);
     region = CITY_REGION[city];
 
     const nd = date ? normDate(date) : null;
